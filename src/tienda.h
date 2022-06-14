@@ -2,6 +2,10 @@
 #define TIENDA_H
 
 #include<string>
+#include<vector>
+#include<iostream>
+
+#include "producto.h"
 
 using namespace std;
 
@@ -12,9 +16,14 @@ namespace AdministradorExistencias {
         char direccionInternet[24];
         char direccionFisica[24];
         char telefono[8];
+        vector<Producto *> productos;
 
         public:
-        Tienda(char unNombre, char unaDireccionI, char unaDireccionF, char unTelefono);
+        Tienda(string unNombre, string unaDireccionI, string unaDireccionF, string unTelefono);
+        vector<Producto*> obtenerProductos();
+        void insertarProducto(int unaId, string unNombre, int cantExistencias);
+        void insertarProducto(Producto* nuevoProducto);
+        void guardarInformacionTiendaArchivoBinario(ostream* archivo);
 
     };
 }
