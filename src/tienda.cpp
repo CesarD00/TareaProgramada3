@@ -21,24 +21,24 @@ Tienda::Tienda(){
 }
 
 Tienda::~Tienda(){
-    for(Producto* producto : this->productos) {
-        delete producto;
+    for(const auto &producto : this->productos){
+        delete producto.second;
     }
 }
 
-vector<Producto*> Tienda::obtenerProductos() {
+map<int, Producto*> Tienda::obtenerProductos() {
     return this->productos;
 }
 
 void Tienda::insertarProducto(int unaId, string unNombre, int cantExistencias) {
     Producto* nuevoProducto = new Producto(unaId, unNombre, cantExistencias);
 
-    this->productos.push_back(nuevoProducto);
+    this->productos.insert(pair<int, Producto*>(unaId, nuevoProducto));
 
 }
 
 void Tienda::insertarProducto(Producto* producto) {
-    this->productos.push_back(producto);
+    this->productos.insert(pair<int, Producto*>(producto->obtenerId(), producto));
 }
 
 void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
@@ -49,8 +49,8 @@ void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
     salida->write(this->telefono, 8);
 
     // Escritura de los productos de la tienda
-    for(Producto* producto : this->productos){
-        salida->write((char *)producto, sizeof(Producto));
+    for(const auto &producto : this->productos){
+        salida->write((char *)producto.second, sizeof(Producto));
     }
 }
 
