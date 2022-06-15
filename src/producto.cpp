@@ -17,4 +17,7 @@ Producto::Producto(int unaId, string unNombre, int cantExistencias) {
     this->numExistencias = cantExistencias;
 }
 
+Producto::~Producto(){
+    
+}
 

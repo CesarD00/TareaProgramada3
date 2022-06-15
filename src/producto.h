@@ -7,12 +7,13 @@ using namespace std;
 
 class Producto {
     int id;
-    char nombre[20];
     int numExistencias;
-
+    char nombre[20];
+    
     public:
     Producto();
     Producto(int unaId, string unNombre, int cantExistencias);
+    ~Producto();
 };
 
 #endif

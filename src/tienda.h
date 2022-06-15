@@ -20,10 +20,17 @@ namespace AdministradorExistencias {
 
         public:
         Tienda(string unNombre, string unaDireccionI, string unaDireccionF, string unTelefono);
+        Tienda();
+        ~Tienda();
         vector<Producto*> obtenerProductos();
         void insertarProducto(int unaId, string unNombre, int cantExistencias);
         void insertarProducto(Producto* nuevoProducto);
-        void guardarInformacionTiendaArchivoBinario(ostream* archivo);
+        void guardarInformacionTiendaArchivoBinario(ostream* salida);
+        void cargarInformacionTiendaArchivoBinario(istream* entrada);
+        char* obtenerNombre();
+        char* obtenerDireccionInternet();
+        char* obtenerDireccionFisica();
+        char* obtenerTelefono();
 
     };
 }

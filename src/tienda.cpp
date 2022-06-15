@@ -11,8 +11,19 @@ Tienda::Tienda(string unNombre, string unaDireccionI, string unaDireccionF, stri
     strcpy(this->direccionInternet, unaDireccionI.c_str());
     strcpy(this->direccionFisica, unaDireccionF.c_str());
     strcpy(this->telefono, unTelefono.c_str());
+}
 
-    this->productos = {};
+Tienda::Tienda(){
+    strcpy(this->nombre, "");
+    strcpy(this->direccionInternet, "");
+    strcpy(this->direccionFisica, "");
+    strcpy(this->telefono, "");    
+}
+
+Tienda::~Tienda(){
+    for(Producto* producto : this->productos) {
+        delete producto;
+    }
 }
 
 vector<Producto*> Tienda::obtenerProductos() {
@@ -24,11 +35,10 @@ void Tienda::insertarProducto(int unaId, string unNombre, int cantExistencias) {
 
     this->productos.push_back(nuevoProducto);
 
-    delete nuevoProducto;
 }
 
-void Tienda::insertarProducto(Producto* nuevoProducto) {
-    this->productos.push_back(nuevoProducto);
+void Tienda::insertarProducto(Producto* producto) {
+    this->productos.push_back(producto);
 }
 
 void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
@@ -43,3 +53,43 @@ void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
         salida->write((char *)producto, sizeof(Producto));
     }
 }
+
+void Tienda::cargarInformacionTiendaArchivoBinario(istream* entrada){
+    entrada->seekg(0, ios::end);
+
+    int cantidadBytes = entrada->tellg();
+    int cantidadProductos = (cantidadBytes - 71) / sizeof(Producto);
+
+    entrada->seekg(0, ios::beg);
+
+    entrada->read(this->nombre, 15);
+    entrada->read(this->direccionInternet, 24);
+    entrada->read(this->direccionFisica, 24);
+    entrada->read(this->telefono, 8);
+
+    for(int i = 0; i < cantidadProductos; i++){
+        Producto* nuevoProducto = new Producto();
+
+        entrada->read((char*)nuevoProducto, sizeof(Producto));
+
+        this->insertarProducto(nuevoProducto);
+    }
+
+}
+
+char* Tienda::obtenerNombre(){
+    return this->nombre;
+}
+
+char* Tienda::obtenerDireccionInternet(){
+    return this->direccionInternet;
+}
+
+char* Tienda::obtenerDireccionFisica(){
+    return this->direccionFisica;
+}
+
+char* Tienda::obtenerTelefono(){
+    return this->telefono;
+}
+

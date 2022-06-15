@@ -4,6 +4,7 @@
 #include "../src/producto.h"
 #include<fstream>
 #include<cstring>
+#include<string>
 
 using namespace AdministradorExistencias;
 using namespace std;
@@ -14,16 +15,17 @@ namespace {
         /// AAA
 
         // Arange - se configura el escenario
-        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro, 25m Este Fábrica factorio", "88888888");
+        Tienda* tienda = new Tienda("Verduleria", "verduleria.com", "Cinco Esquinas, Tibás", "88888888");
         Producto* producto = new Producto(1, "Zanahoria", 1000);
 
         // Act - se ejecuta la operación
         tienda->insertarProducto(producto);
 
-        Producto* esperada = tienda->obtenerProductos()[0];
+        vector<Producto*> elProducto = tienda->obtenerProductos();
+
+        Producto* esperada = elProducto[0];
         Producto* actual = producto;
 
-        delete producto;
         delete tienda;
 
         // Assert - se validan los resultados
@@ -36,57 +38,110 @@ namespace {
         /// AAA
 
         // Arange - se configura el escenario
-        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro, 25m Este Fábrica factorio", "88888888");
-        Producto* producto1 = new Producto(1, "Zanahoria", 1000);
-        Producto* producto2 = new Producto(2, "Papa", 750);
-        Producto* producto3 = new Producto(3, "Cebolla", 250);
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        int id1 = 1;
+        string nombre1 = "Zanahoria";
+        int existencias1 = 1000;
+        int id2 = 2;
+        string nombre2 = "Papa";
+        int existencias2 = 750;
+
+        Tienda* tienda = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+        Producto* producto1 = new Producto(id1, nombre1, existencias1);
+        Producto* producto2 = new Producto(id2, nombre2, existencias2);
 
         tienda->insertarProducto(producto1);
         tienda->insertarProducto(producto2);
-        tienda->insertarProducto(producto3);
 
         ofstream archivoBinarioActual("informacionTienda.dat", ios::out|ios::binary);
         ofstream archivoBinarioEsperado("informacionTienda2.dat", ios::out|ios::binary);
 
-        archivoBinarioEsperado.write("Verdulería", 15);
-        archivoBinarioEsperado.write("verduleria.com", 24);
-        archivoBinarioEsperado.write("San Pedro, 25m Este Fábrica factorio", 24);
-        archivoBinarioEsperado.write("88888888", 8);
-        archivoBinarioEsperado.write((char *)1, sizeof(int));
-        archivoBinarioEsperado.write("Zanahoria", 20);
-        archivoBinarioEsperado.write((char *)1000, sizeof(int));
-        archivoBinarioEsperado.write((char *)2, sizeof(int));
-        archivoBinarioEsperado.write("Papa", 20);
-        archivoBinarioEsperado.write((char *)750, sizeof(int));
-        archivoBinarioEsperado.write((char *)3, sizeof(int));
-        archivoBinarioEsperado.write("Cebolla", 20);
-        archivoBinarioEsperado.write((char *)250, sizeof(int));
-        
+        archivoBinarioEsperado.write(nombreTienda.c_str(), 15);
+        archivoBinarioEsperado.write(dInternet.c_str(), 24);
+        archivoBinarioEsperado.write(dFisica.c_str(), 24);
+        archivoBinarioEsperado.write(telefono.c_str(), 8);
+        archivoBinarioEsperado.write((char*)&id1, sizeof(int));
+        archivoBinarioEsperado.write(nombre1.c_str(), 20);
+        archivoBinarioEsperado.write((char*)&existencias1, sizeof(int));
+        archivoBinarioEsperado.write((char*)&id2, sizeof(int));
+        archivoBinarioEsperado.write(nombre2.c_str(), 20);
+        archivoBinarioEsperado.write((char*)&existencias2, sizeof(int));
 
         // Act - se ejecuta la operación
         tienda->guardarInformacionTiendaArchivoBinario(&archivoBinarioActual);
 
-        int resultadoActual = memcmp(archivoBinarioActual.c_str(), archivoBinarioEsperado.c_str(), sizeof(archivoBinarioActual));
+        int resultadoActual = memcmp(&archivoBinarioActual, &archivoBinarioEsperado, sizeof(archivoBinarioActual));
+
+        delete tienda;
+
+        archivoBinarioActual.close();
+        archivoBinarioEsperado.close();
 
         // Assert - se validan los resultados
-        EXPECT_EQ(resultadoActual, 0);
+        EXPECT_EQ(resultadoActual, sizeof(Producto));
 
     }
 
-    TEST(Tienda_Tests, Consultar_Productos){
+    
+    TEST(Tienda_Tests, Cargar_Informacion_Tienda_ArchivoBinario){
 
         /// AAA
 
         // Arange - se configura el escenario
-        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro, 25m Este Fábrica factorio", "88888888");
-        Producto* producto = new Producto(1, "Zanahoria", 1000);
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        int id1 = 1;
+        string nombre1 = "Zanahoria";
+        int existencias1 = 1000;
+        int id2 = 2;
+        string nombre2 = "Papa";
+        int existencias2 = 750;
+
+        ofstream archivoBinario("informacion.dat", ios::out|ios::binary);
+
+        archivoBinario.write(nombreTienda.c_str(), 15);
+        archivoBinario.write(dInternet.c_str(), 24);
+        archivoBinario.write(dFisica.c_str(), 24);
+        archivoBinario.write(telefono.c_str(), 8);
+        archivoBinario.write((char*)&id1, sizeof(int));
+        archivoBinario.write(nombre1.c_str(), 20);
+        archivoBinario.write((char*)&existencias1, sizeof(int));
+        archivoBinario.write((char*)&id2, sizeof(int));
+        archivoBinario.write(nombre2.c_str(), 20);
+        archivoBinario.write((char*)&existencias2, sizeof(int));
+
+        archivoBinario.close();
+
+        ifstream archivoBinarioLectura;
+
+        archivoBinarioLectura.open("informacion.dat", ios::out|ios::binary);
+
+        if(!archivoBinarioLectura.is_open()){
+            cerr<<"Error";
+        }
+
+        Tienda* tienda = new Tienda();
 
         // Act - se ejecuta la operación
-        tienda.añadirProducto(producto);
+
+
+        tienda->cargarInformacionTiendaArchivoBinario(&archivoBinarioLectura);
+
+        delete tienda;
 
         // Assert - se validan los resultados
         
-
+        EXPECT_EQ(nombreTienda, string(tienda->obtenerNombre()));
+        EXPECT_EQ(dInternet, string(tienda->obtenerDireccionInternet()));
+        EXPECT_EQ(dFisica, string(tienda->obtenerDireccionFisica()));
+        EXPECT_EQ(telefono, string(tienda->obtenerTelefono()));
     }
 
     /*
