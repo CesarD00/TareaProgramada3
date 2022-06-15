@@ -5,6 +5,7 @@
 #include<fstream>
 #include<cstring>
 #include<string>
+#include<iostream>
 
 using namespace AdministradorExistencias;
 using namespace std;
@@ -82,7 +83,7 @@ namespace {
         archivoBinarioEsperado.close();
 
         // Assert - se validan los resultados
-        EXPECT_EQ(resultadoActual, sizeof(Producto));
+        EXPECT_EQ(resultadoActual, 0);
 
     }
 
@@ -97,12 +98,9 @@ namespace {
         string dFisica = "Cinco Esquinas, Tibas";
         string telefono = "88888888"; 
 
-        int id1 = 1;
-        string nombre1 = "Zanahoria";
-        int existencias1 = 1000;
-        int id2 = 2;
-        string nombre2 = "Papa";
-        int existencias2 = 750;
+        int id = 1;
+        string nombre = "Zanahoria";
+        int existencias = 1000;
 
         ofstream archivoBinario("informacion.dat", ios::out|ios::binary);
 
@@ -110,12 +108,10 @@ namespace {
         archivoBinario.write(dInternet.c_str(), 24);
         archivoBinario.write(dFisica.c_str(), 24);
         archivoBinario.write(telefono.c_str(), 8);
-        archivoBinario.write((char*)&id1, sizeof(int));
-        archivoBinario.write(nombre1.c_str(), 20);
-        archivoBinario.write((char*)&existencias1, sizeof(int));
-        archivoBinario.write((char*)&id2, sizeof(int));
-        archivoBinario.write(nombre2.c_str(), 20);
-        archivoBinario.write((char*)&existencias2, sizeof(int));
+        archivoBinario.write((char*)&id, sizeof(int));
+        archivoBinario.write(nombre.c_str(), 20);
+        archivoBinario.write((char*)&existencias, sizeof(int));
+
 
         archivoBinario.close();
 
@@ -131,10 +127,7 @@ namespace {
 
         // Act - se ejecuta la operación
 
-
         tienda->cargarInformacionTiendaArchivoBinario(&archivoBinarioLectura);
-
-        delete tienda;
 
         // Assert - se validan los resultados
         
@@ -142,6 +135,11 @@ namespace {
         EXPECT_EQ(dInternet, string(tienda->obtenerDireccionInternet()));
         EXPECT_EQ(dFisica, string(tienda->obtenerDireccionFisica()));
         EXPECT_EQ(telefono, string(tienda->obtenerTelefono()));
+        EXPECT_EQ(id, tienda->obtenerProductos().at(0)->obtenerId());
+        EXPECT_EQ(nombre, string(tienda->obtenerProductos().at(0)->obtenerNombre()));
+        EXPECT_EQ(existencias, tienda->obtenerProductos().at(0)->obtenerNumExistencias());
+
+        delete tienda;
     }
 
     /*

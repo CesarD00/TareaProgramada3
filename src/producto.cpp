@@ -21,3 +21,15 @@ Producto::~Producto(){
     
 }
 
+int Producto::obtenerId(){
+    return this->id;
+}
+
+int Producto::obtenerNumExistencias(){
+    return this->numExistencias;
+}
+
+char* Producto::obtenerNombre(){
+    return this->nombre;
+}
+

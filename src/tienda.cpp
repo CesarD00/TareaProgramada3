@@ -62,10 +62,10 @@ void Tienda::cargarInformacionTiendaArchivoBinario(istream* entrada){
 
     entrada->seekg(0, ios::beg);
 
-    entrada->read(this->nombre, 15);
-    entrada->read(this->direccionInternet, 24);
-    entrada->read(this->direccionFisica, 24);
-    entrada->read(this->telefono, 8);
+    entrada->read(this->nombre, sizeof(this->nombre));
+    entrada->read(this->direccionInternet, sizeof(this->direccionInternet));
+    entrada->read(this->direccionFisica, sizeof(this->direccionFisica));
+    entrada->read(this->telefono, sizeof(this->telefono));
 
     for(int i = 0; i < cantidadProductos; i++){
         Producto* nuevoProducto = new Producto();

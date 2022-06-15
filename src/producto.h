@@ -7,13 +7,16 @@ using namespace std;
 
 class Producto {
     int id;
-    int numExistencias;
     char nombre[20];
+    int numExistencias;
     
     public:
     Producto();
     Producto(int unaId, string unNombre, int cantExistencias);
     ~Producto();
+    int obtenerId();
+    int obtenerNumExistencias();
+    char* obtenerNombre();
 };
 
 #endif
