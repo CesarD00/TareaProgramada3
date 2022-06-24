@@ -2,6 +2,7 @@
 #define PRODUCTO_H
 
 #include <string>
+#include<iostream>
 
 using namespace std;
 
@@ -17,6 +18,10 @@ class Producto {
     int obtenerId();
     int obtenerNumExistencias();
     char* obtenerNombre();
+    void asignarId(int unaId);
+    void asignarNombre(string unNombre);
+    void asignarExistencias(int cantExistencias);
+
 };
 
 #endif

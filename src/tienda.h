@@ -26,14 +26,18 @@ namespace AdministradorExistencias {
         map<int, Producto*> obtenerProductos();
         void insertarProducto(int unaId, string unNombre, int cantExistencias);
         void insertarProducto(Producto* nuevoProducto);
+        void modificarProducto(int unaId, string unNombre, int cantExistencias);
         void guardarInformacionTiendaArchivoBinario(ostream* salida);
         void cargarInformacionTiendaArchivoBinario(istream* entrada);
         char* obtenerNombre();
         char* obtenerDireccionInternet();
         char* obtenerDireccionFisica();
         char* obtenerTelefono();
+        string toString();
 
     };
+
+    
 }
 
 #endif

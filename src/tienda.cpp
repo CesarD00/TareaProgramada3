@@ -41,12 +41,17 @@ void Tienda::insertarProducto(Producto* producto) {
     this->productos.insert(pair<int, Producto*>(producto->obtenerId(), producto));
 }
 
+void Tienda::modificarProducto(int unaId, string unNombre, int cantExistencias) {
+    this->productos.at(unaId)->asignarNombre(unNombre);
+    this->productos.at(unaId)->asignarExistencias(cantExistencias);   
+}
+
 void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
     // Escritura de la información general de la tienda
-    salida->write(this->nombre, 15);
-    salida->write(this->direccionInternet, 24);
-    salida->write(this->direccionFisica, 24);
-    salida->write(this->telefono, 8);
+    salida->write(this->nombre, sizeof(this->nombre));
+    salida->write(this->direccionInternet, sizeof(this->direccionInternet));
+    salida->write(this->direccionFisica, sizeof(this->direccionFisica));
+    salida->write(this->telefono, 9);
 
     // Escritura de los productos de la tienda
     for(const auto &producto : this->productos){
@@ -58,14 +63,14 @@ void Tienda::cargarInformacionTiendaArchivoBinario(istream* entrada){
     entrada->seekg(0, ios::end);
 
     int cantidadBytes = entrada->tellg();
-    int cantidadProductos = (cantidadBytes - 71) / sizeof(Producto);
+    int cantidadProductos = (cantidadBytes - 72) / sizeof(Producto);
 
     entrada->seekg(0, ios::beg);
 
     entrada->read(this->nombre, sizeof(this->nombre));
     entrada->read(this->direccionInternet, sizeof(this->direccionInternet));
     entrada->read(this->direccionFisica, sizeof(this->direccionFisica));
-    entrada->read(this->telefono, sizeof(this->telefono));
+    entrada->read(this->telefono, 9);
 
     for(int i = 0; i < cantidadProductos; i++){
         Producto* nuevoProducto = new Producto();
@@ -91,5 +96,19 @@ char* Tienda::obtenerDireccionFisica(){
 
 char* Tienda::obtenerTelefono(){
     return this->telefono;
+}
+
+string Tienda::toString() {
+    string informacion = "";
+
+    informacion += string(this->nombre) + " " + string(this->direccionInternet) + " " + string(this->direccionFisica) + " " + string(this->telefono);
+
+    for(const auto &producto : this->productos){
+        informacion += producto.second->obtenerId() + " ";
+        informacion += string(producto.second->obtenerNombre()) + " ";
+        informacion += producto.second->obtenerNumExistencias() + " ";
+    }
+
+    return informacion;
 }
 

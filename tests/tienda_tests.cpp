@@ -34,8 +34,154 @@ namespace {
         EXPECT_EQ(actual, esperada);
 
     }
+
+    TEST(Tienda_Tests, Modificar_Producto){
+        /// AAA
+
+        // Arange - se configura el escenario
+        string nuevoNombre = "Zanahoria";
+        int nuevaExistencia = 5000; 
+
+        Tienda* tienda = new Tienda("Verduleria", "verduleria.com", "Cinco Esquinas, Tibás", "88888888");
+        Producto* producto = new Producto(1, "sanaoria", 1000);
+
+        tienda->insertarProducto(producto);
+
+        // Act - se ejecuta la operación
+
+        tienda->modificarProducto(1, nuevoNombre, nuevaExistencia);
+
+        // Assert - se validan los resultados
+
+        EXPECT_EQ(nuevoNombre, tienda->obtenerProductos().at(1)->obtenerNombre());          
+        EXPECT_EQ(nuevaExistencia, tienda->obtenerProductos().at(1)->obtenerNumExistencias());          
+
+        delete tienda;
+    }
+
+    TEST(Tienda_Tests, Cargar_Informacion_Tienda_ArchivoBinario){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        int id = 1;
+        string nombre = "Zanahoria";
+        int existencias = 1500;
+
+        ofstream archivoBinario("informacion.dat", ios::out|ios::binary);
+
+        archivoBinario.write(nombreTienda.c_str(), 15);
+        archivoBinario.write(dInternet.c_str(), 24);
+        archivoBinario.write(dFisica.c_str(), 24);
+        archivoBinario.write(telefono.c_str(), 9);
+        archivoBinario.write((char*)&id, sizeof(int));
+        archivoBinario.write(nombre.c_str(), 20);
+        archivoBinario.write((char*)&existencias, sizeof(int));
+
+        archivoBinario.close();
+
+        ifstream archivoBinarioLectura;
+
+        archivoBinarioLectura.open("informacion.dat", ios::in|ios::binary);
+
+        if(!archivoBinarioLectura.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        Tienda* tienda = new Tienda();
+
+        // Act - se ejecuta la operación
+
+        tienda->cargarInformacionTiendaArchivoBinario(&archivoBinarioLectura);
+
+
+        // Assert - se validan los resultados
+        
+        EXPECT_EQ(nombreTienda, string(tienda->obtenerNombre()));
+        EXPECT_EQ(dInternet, string(tienda->obtenerDireccionInternet()));
+        EXPECT_EQ(dFisica, string(tienda->obtenerDireccionFisica()));
+        EXPECT_EQ(telefono, string(tienda->obtenerTelefono()));
+        EXPECT_EQ(id, tienda->obtenerProductos().at(1)->obtenerId());
+        EXPECT_EQ(nombre, string(tienda->obtenerProductos().at(1)->obtenerNombre()));
+        EXPECT_EQ(existencias, tienda->obtenerProductos().at(1)->obtenerNumExistencias());
+
+        delete tienda;
+    }
     
-    TEST(Tienda_Tests, Guardar_Informacion_Tienda_ArchivoBinario){
+    TEST(Tienda_Tests, Guardar_Informacion_Tienda_ArchivoBinario_InsercionProductos){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        int id1 = 1;
+        string nombre1 = "Zanahoria";
+        int existencias1 = 1000;
+        int id2 = 2;
+        string nombre2 = "Papa";
+        int existencias2 = 750;
+
+        Tienda* tienda = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+        Producto* producto1 = new Producto(id1, nombre1, existencias1);
+        Producto* producto2 = new Producto(id2, nombre2, existencias2);
+
+        tienda->insertarProducto(producto1);
+        tienda->insertarProducto(producto2);
+
+        ofstream archivoBinarioSalida;
+
+        archivoBinarioSalida.open("archivo_test.dat", ios::out|ios::binary);
+
+        if(!archivoBinarioSalida.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        // Act - se ejecuta la operación
+        tienda->guardarInformacionTiendaArchivoBinario(&archivoBinarioSalida);
+
+        archivoBinarioSalida.close();
+
+        ifstream archivoBinarioEntrada;
+
+        archivoBinarioEntrada.open("archivo_test.dat", ios::in|ios::binary);
+
+        if(!archivoBinarioEntrada.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        Tienda* tiendaActual = new Tienda();
+
+        tiendaActual->cargarInformacionTiendaArchivoBinario(&archivoBinarioEntrada);
+
+        archivoBinarioEntrada.close();
+
+
+        string esperado = tienda->toString();
+        string actual = tiendaActual->toString();
+
+        delete tienda;
+        delete tiendaActual;
+
+        // Assert - se validan los resultados
+        EXPECT_EQ(esperado, actual);
+
+    }
+
+    /*
+
+    TEST(Tienda_Tests, Guardar_Informacion_Tienda_ArchivoBinario_ModificacionProductos){
 
         /// AAA
 
@@ -88,61 +234,6 @@ namespace {
 
     }
 
-    
-    TEST(Tienda_Tests, Cargar_Informacion_Tienda_ArchivoBinario){
-
-        /// AAA
-
-        // Arange - se configura el escenario
-        string nombreTienda = "Verduleria";
-        string dInternet = "verduleria.com";
-        string dFisica = "Cinco Esquinas, Tibas";
-        string telefono = "88888888"; 
-
-        int id = 1;
-        string nombre = "Zanahoria";
-        int existencias = 1500;
-
-        ofstream archivoBinario("informacion.dat", ios::out|ios::binary);
-
-        archivoBinario.write(nombreTienda.c_str(), 15);
-        archivoBinario.write(dInternet.c_str(), 24);
-        archivoBinario.write(dFisica.c_str(), 24);
-        archivoBinario.write(telefono.c_str(), 9);
-        archivoBinario.write((char*)&id, sizeof(int));
-        archivoBinario.write(nombre.c_str(), 20);
-        archivoBinario.write((char*)&existencias, sizeof(int));
-
-        archivoBinario.close();
-
-        ifstream archivoBinarioLectura;
-
-        archivoBinarioLectura.open("informacion.dat", ios::out|ios::binary);
-
-        if(!archivoBinarioLectura.is_open()){
-            cerr<<"Error";
-        }
-
-        Tienda* tienda = new Tienda();
-
-        // Act - se ejecuta la operación
-
-        tienda->cargarInformacionTiendaArchivoBinario(&archivoBinarioLectura);
-
-
-        // Assert - se validan los resultados
-        
-        EXPECT_EQ(nombreTienda, string(tienda->obtenerNombre()));
-        EXPECT_EQ(dInternet, string(tienda->obtenerDireccionInternet()));
-        EXPECT_EQ(dFisica, string(tienda->obtenerDireccionFisica()));
-        EXPECT_EQ(telefono, string(tienda->obtenerTelefono()));
-        EXPECT_EQ(id, tienda->obtenerProductos().at(1)->obtenerId());
-        EXPECT_EQ(nombre, string(tienda->obtenerProductos().at(1)->obtenerNombre()));
-        EXPECT_EQ(existencias, tienda->obtenerProductos().at(1)->obtenerNumExistencias());
-
-        delete tienda;
-    }
-
     /*
     TEST(Tienda_Tests, Consultar_Informacion_General){
 
@@ -161,22 +252,6 @@ namespace {
     }
 
     TEST(Tienda_Tests, Cargar_Productos_ArchivoBinario){
-
-        /// AAA
-
-        // Arange - se configura el escenario
-        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro, 25m Este Fábrica factorio", "88888888");
-        Producto* producto = new Producto(1, "Zanahoria", 1000);
-
-        // Act - se ejecuta la operación
-        tienda.añadirProducto(producto);
-
-        // Assert - se validan los resultados
-        
-
-    }
-
-    TEST(Tienda_Tests, Modificar_Producto){
 
         /// AAA
 
