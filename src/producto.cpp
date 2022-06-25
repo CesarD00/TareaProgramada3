@@ -16,7 +16,7 @@ Producto::Producto() {
 
 Producto::Producto(int unaId, string unNombre, int cantExistencias) {
     this->id = unaId;
-
+   
     if(unNombre.length() > sizeof(this->nombre)){
         throw ExcepcionStringTamanoExcedido();
     }

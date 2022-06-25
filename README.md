@@ -22,3 +22,20 @@ Bytes necesarios para la información de la tienda = 71
 Bytes necesarios para un producto = 28
 
 Offset Producto "n" =  71 + (n * 28)
+
+## Para compilar el programa, ejecute la siguiente instrucción:
+
+- make
+
+## Para eliminar la carpeta bin junto con sus archivos, ejecute la siguiente instrucción:
+
+- make clean
+
+## Para compilar y ejecutar las pruebas unitarias, utilice las siguientes instrucciones:
+
+- make test
+- ./bin/tests
+
+
+
+

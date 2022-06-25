@@ -126,7 +126,7 @@ namespace {
         archivoBinario.write(nombreTienda.c_str(), 15);
         archivoBinario.write(dInternet.c_str(), 24);
         archivoBinario.write(dFisica.c_str(), 24);
-        archivoBinario.write(telefono.c_str(), 9);
+        archivoBinario.write(telefono.c_str(), 8);
         archivoBinario.write((char*)&id, sizeof(int));
         archivoBinario.write(nombre.c_str(), 20);
         archivoBinario.write((char*)&existencias, sizeof(int));
@@ -147,6 +147,10 @@ namespace {
         // Act - se ejecuta la operación
 
         tienda->cargarInformacionTiendaArchivoBinario(&archivoBinarioLectura);
+
+        archivoBinarioLectura.close();
+
+        int a = remove("informacion.dat");
 
 
         // Assert - se validan los resultados
@@ -215,6 +219,8 @@ namespace {
 
         archivoBinarioEntrada.close();
 
+        int a = remove("archivo_test.dat");
+
         string esperado = tienda->toString();
         string actual = tiendaActual->toString();
 
@@ -223,6 +229,158 @@ namespace {
 
         // Assert - se validan los resultados
         EXPECT_EQ(esperado, actual);
+
+    }
+
+    TEST(Tienda_Tests, Guardar_Informacion_Tienda_ArchivoBinario_ModificacionProductos){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        int id1 = 1;
+        string nombre1 = "Zanahoria";
+        int existencias1 = 1000;
+    
+        Tienda* tienda = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+
+        ofstream archivoBinarioSalida;
+
+        archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
+
+        if(!archivoBinarioSalida.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        archivoBinarioSalida.write(nombreTienda.c_str(), 15);
+        archivoBinarioSalida.write(dInternet.c_str(), 24);
+        archivoBinarioSalida.write(dFisica.c_str(), 24);
+        archivoBinarioSalida.write(telefono.c_str(), 8);
+        archivoBinarioSalida.write((char*)&id1, sizeof(int));
+        archivoBinarioSalida.write(nombre1.c_str(), 20);
+        archivoBinarioSalida.write((char*)&existencias1, sizeof(int));
+
+        archivoBinarioSalida.close();
+
+        ifstream archivoBinarioEntrada;
+
+        archivoBinarioEntrada.open("informacionTienda.dat", ios::in|ios::binary);
+
+        if(!archivoBinarioEntrada.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        tienda->cargarInformacionTiendaArchivoBinario(&archivoBinarioEntrada);
+        Tienda* tienda2 = new Tienda();
+
+        // Act - se ejecuta la operación
+
+        tienda->modificarProducto(1, "Manzana", 2500);
+
+        archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
+
+        if(!archivoBinarioSalida.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        tienda->guardarInformacionTiendaArchivoBinario(&archivoBinarioSalida);
+
+        archivoBinarioSalida.close();
+
+        tienda2->cargarInformacionTiendaArchivoBinario(&archivoBinarioEntrada);
+
+        archivoBinarioEntrada.close();
+
+        int a = remove("informacionTienda.dat");
+
+        // Assert - se validan los resultados
+        EXPECT_EQ(tienda->toString(), tienda2->toString());
+
+        delete tienda2;
+        delete tienda;
+
+    }
+
+    TEST(Tienda_Tests, Guardar_Informacion_Tienda_ArchivoBinario_EliminacionProductos){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        int id1 = 1;
+        string nombre1 = "Zanahoria";
+        int existencias1 = 1000;
+    
+        Tienda* tienda = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+
+        ofstream archivoBinarioSalida;
+
+        archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
+
+        if(!archivoBinarioSalida.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        archivoBinarioSalida.write(nombreTienda.c_str(), 15);
+        archivoBinarioSalida.write(dInternet.c_str(), 24);
+        archivoBinarioSalida.write(dFisica.c_str(), 24);
+        archivoBinarioSalida.write(telefono.c_str(), 8);
+        archivoBinarioSalida.write((char*)&id1, sizeof(int));
+        archivoBinarioSalida.write(nombre1.c_str(), 20);
+        archivoBinarioSalida.write((char*)&existencias1, sizeof(int));
+
+        archivoBinarioSalida.close();
+
+        ifstream archivoBinarioEntrada;
+
+        archivoBinarioEntrada.open("informacionTienda.dat", ios::in|ios::binary);
+
+        if(!archivoBinarioEntrada.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        tienda->cargarInformacionTiendaArchivoBinario(&archivoBinarioEntrada);
+        Tienda* tienda2 = new Tienda();
+
+        // Act - se ejecuta la operación
+
+        tienda->eliminarProducto(1);
+
+        archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
+
+        if(!archivoBinarioSalida.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        tienda->guardarInformacionTiendaArchivoBinario(&archivoBinarioSalida);
+
+        archivoBinarioSalida.close();
+
+        tienda2->cargarInformacionTiendaArchivoBinario(&archivoBinarioEntrada);
+
+        archivoBinarioEntrada.close();
+
+        int a = remove("informacionTienda.dat");
+
+        // Assert - se validan los resultados
+        EXPECT_EQ(tienda->toString(), tienda2->toString());
+
+        delete tienda2;
+        delete tienda;
 
     }
 
@@ -247,61 +405,6 @@ namespace {
             tienda = new Tienda(nombreTienda, dInternet, dFisica, telefono);
         }, ExcepcionStringTamanoExcedido);
    
-    }
-
-    /*
-
-    TEST(Tienda_Tests, Guardar_Informacion_Tienda_ArchivoBinario_ModificacionProductos){
-
-        /// AAA
-
-        // Arange - se configura el escenario
-        string nombreTienda = "Verduleria";
-        string dInternet = "verduleria.com";
-        string dFisica = "Cinco Esquinas, Tibas";
-        string telefono = "88888888"; 
-
-        int id1 = 1;
-        string nombre1 = "Zanahoria";
-        int existencias1 = 1000;
-        int id2 = 2;
-        string nombre2 = "Papa";
-        int existencias2 = 750;
-
-        Tienda* tienda = new Tienda(nombreTienda, dInternet, dFisica, telefono);
-        Producto* producto1 = new Producto(id1, nombre1, existencias1);
-        Producto* producto2 = new Producto(id2, nombre2, existencias2);
-
-        tienda->insertarProducto(producto1);
-        tienda->insertarProducto(producto2);
-
-        ofstream archivoBinarioActual("informacionTienda.dat", ios::out|ios::binary);
-        ofstream archivoBinarioEsperado("informacionTienda2.dat", ios::out|ios::binary);
-
-        archivoBinarioEsperado.write(nombreTienda.c_str(), 15);
-        archivoBinarioEsperado.write(dInternet.c_str(), 24);
-        archivoBinarioEsperado.write(dFisica.c_str(), 24);
-        archivoBinarioEsperado.write(telefono.c_str(), 8);
-        archivoBinarioEsperado.write((char*)&id1, sizeof(int));
-        archivoBinarioEsperado.write(nombre1.c_str(), 20);
-        archivoBinarioEsperado.write((char*)&existencias1, sizeof(int));
-        archivoBinarioEsperado.write((char*)&id2, sizeof(int));
-        archivoBinarioEsperado.write(nombre2.c_str(), 20);
-        archivoBinarioEsperado.write((char*)&existencias2, sizeof(int));
-
-        // Act - se ejecuta la operación
-        tienda->guardarInformacionTiendaArchivoBinario(&archivoBinarioActual);
-
-        int resultadoActual = memcmp(&archivoBinarioActual, &archivoBinarioEsperado, sizeof(archivoBinarioActual));
-
-        delete tienda;
-
-        archivoBinarioActual.close();
-        archivoBinarioEsperado.close();
-
-        // Assert - se validan los resultados
-        EXPECT_EQ(resultadoActual, 0);
-
     }
 
     /*

@@ -16,8 +16,8 @@ namespace AdministradorExistencias {
         char nombre[15];
         char direccionInternet[24];
         char direccionFisica[24];
-        char telefono[9];
-        map<int, Producto*> productos {};
+        char telefono[8];
+        map<int, Producto*> productos;
 
         public:
         Tienda(string unNombre, string unaDireccionI, string unaDireccionF, string unTelefono);

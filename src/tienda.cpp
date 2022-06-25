@@ -4,6 +4,7 @@
 #include "producto.h"
 
 #include "excepcionStringTamanoExcedido.h"
+#include "excepcionNumeroNegativo.h"
 
 using namespace std;
 using namespace AdministradorExistencias;
@@ -43,7 +44,7 @@ Tienda::Tienda(){
     strcpy(this->nombre, "");
     strcpy(this->direccionInternet, "");
     strcpy(this->direccionFisica, "");
-    strcpy(this->telefono, "");    
+    strcpy(this->telefono, ""); 
 }
 
 Tienda::~Tienda(){
@@ -64,6 +65,9 @@ void Tienda::insertarProducto(int unaId, string unNombre, int cantExistencias) {
     catch(ExcepcionStringTamanoExcedido ex){
         ex.what();
     }
+    catch(ExcepcionNumeroNegativo ex){
+        ex.what();
+    }
     
 }
 
@@ -77,6 +81,9 @@ void Tienda::modificarProducto(int unaId, string unNombre, int cantExistencias) 
         this->productos.at(unaId)->asignarExistencias(cantExistencias);   
     }
     catch(ExcepcionStringTamanoExcedido ex){
+        ex.what();
+    }
+    catch(ExcepcionNumeroNegativo ex){
         ex.what();
     }
 }
@@ -102,7 +109,7 @@ void Tienda::cargarInformacionTiendaArchivoBinario(istream* entrada){
     entrada->seekg(0, ios::end);
 
     int cantidadBytes = entrada->tellg();
-    int cantidadProductos = (cantidadBytes - 72) / sizeof(Producto);
+    int cantidadProductos = (cantidadBytes - 71) / sizeof(Producto);
 
     entrada->seekg(0, ios::beg);
 
