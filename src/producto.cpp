@@ -4,6 +4,7 @@
 #include<string>
 #include<iostream>
 #include"excepcionStringTamanoExcedido.h"
+#include"excepcionNumeroNegativo.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ Producto::Producto(int unaId, string unNombre, int cantExistencias) {
     this->id = unaId;
 
     if(unNombre.length() > sizeof(this->nombre)){
-        throw ExcepcionStringTamanoExcedido(this->nombre, unNombre);
+        throw ExcepcionStringTamanoExcedido();
     }
     else{
         strcpy(this->nombre, unNombre.c_str());     
@@ -43,14 +44,19 @@ char* Producto::obtenerNombre(){
 }
 
 void Producto::asignarId(int unaId) {
-    this->id = unaId;
+    if(unaId < 0){
+        throw ExcepcionNumeroNegativo();
+    }
+    else{
+        this->id = unaId;
+    }
     
 }
 
 void Producto::asignarNombre(string unNombre) {
         
     if(unNombre.length() > sizeof(this->nombre)){
-        throw ExcepcionStringTamanoExcedido(this->nombre, unNombre);
+        throw ExcepcionStringTamanoExcedido();
     }
     else{
         strcpy(this->nombre, unNombre.c_str());     
@@ -59,8 +65,12 @@ void Producto::asignarNombre(string unNombre) {
 }
 
 void Producto::asignarExistencias(int cantExistencias) {
-    
-    this->numExistencias = cantExistencias;    
+    if(cantExistencias < 0){
+        throw ExcepcionNumeroNegativo();
+    }
+    else{
+        this->numExistencias = cantExistencias;
+    }
     
 }
 

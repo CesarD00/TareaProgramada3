@@ -7,14 +7,12 @@
 using namespace std;
 
 class ExcepcionStringTamanoExcedido : public exception {
-    string mensaje;
-
     public:
-    ExcepcionStringTamanoExcedido(char* atributo, string datoErroneo) : mensaje("Error. El tamaño del dato '" + datoErroneo + "' no puede exceder los " + to_string(sizeof(atributo)) + " caracteres."){ }
+    ExcepcionStringTamanoExcedido() noexcept = default;
     ~ExcepcionStringTamanoExcedido() = default;
 
     virtual const char* what() const noexcept {
-        return this->mensaje.c_str();
+        return "Error. Ingresó un dato o más que superan el límite de tamaño permitido.";
     }
 
 

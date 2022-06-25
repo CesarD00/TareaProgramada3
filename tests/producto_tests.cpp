@@ -3,6 +3,7 @@
 
 #include "../src/producto.h"
 #include "../src/excepcionStringTamanoExcedido.h"
+#include "../src/excepcionNumeroNegativo.h"
 
 namespace {
     TEST(Producto_Tests, Asignacion_Y_Obtencion_Datos){
@@ -47,6 +48,31 @@ namespace {
         EXPECT_THROW({
             producto->asignarNombre(nombre);
         }, ExcepcionStringTamanoExcedido);
+
+        delete producto;
+
+    }
+
+    TEST(Producto_Tests, Asignacion_Id_Y_Existencias_Negativas){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        int id = -21;
+        int existencias = -520;
+        Producto* producto = new Producto();
+
+        // Act - se ejecuta la operación
+        
+        // Assert - se validan los resultados
+
+        EXPECT_THROW({
+            producto->asignarId(id);
+        }, ExcepcionNumeroNegativo);
+
+        EXPECT_THROW({
+            producto->asignarExistencias(existencias);
+        }, ExcepcionNumeroNegativo);
 
         delete producto;
 

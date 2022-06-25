@@ -11,28 +11,28 @@ using namespace AdministradorExistencias;
 Tienda::Tienda(string unNombre, string unaDireccionI, string unaDireccionF, string unTelefono){
     
     if(unNombre.length() > sizeof(this->nombre)){
-        throw ExcepcionStringTamanoExcedido(this->nombre, unNombre);
+        throw ExcepcionStringTamanoExcedido();
     }
     else{
         strcpy(this->nombre, unNombre.c_str());    
     }
 
     if(unaDireccionI.length() > sizeof(this->direccionInternet)){
-        throw ExcepcionStringTamanoExcedido(this->direccionInternet, unaDireccionI);
+        throw ExcepcionStringTamanoExcedido();
     }
     else{
         strcpy(this->direccionInternet, unaDireccionI.c_str());     
     }  
 
     if(unNombre.length() > sizeof(this->nombre)){
-        throw ExcepcionStringTamanoExcedido(this->nombre, unNombre);
+        throw ExcepcionStringTamanoExcedido();
     }
     else{
         strcpy(this->direccionFisica, unaDireccionF.c_str());  
     }  
 
     if(unTelefono.length() > sizeof(this->telefono)){
-        throw ExcepcionStringTamanoExcedido(this->telefono, unTelefono);
+        throw ExcepcionStringTamanoExcedido();
     }
     else{
         strcpy(this->telefono, unTelefono.c_str());    
@@ -57,10 +57,14 @@ map<int, Producto*> Tienda::obtenerProductos() {
 }
 
 void Tienda::insertarProducto(int unaId, string unNombre, int cantExistencias) {
-    Producto* nuevoProducto = new Producto(unaId, unNombre, cantExistencias);
-
-    this->productos.insert(pair<int, Producto*>(unaId, nuevoProducto));
-
+    try{
+        Producto* nuevoProducto = new Producto(unaId, unNombre, cantExistencias);
+        this->productos.insert(pair<int, Producto*>(unaId, nuevoProducto));
+    }
+    catch(ExcepcionStringTamanoExcedido ex){
+        ex.what();
+    }
+    
 }
 
 void Tienda::insertarProducto(Producto* producto) {
@@ -68,8 +72,13 @@ void Tienda::insertarProducto(Producto* producto) {
 }
 
 void Tienda::modificarProducto(int unaId, string unNombre, int cantExistencias) {
-    this->productos.at(unaId)->asignarNombre(unNombre);
-    this->productos.at(unaId)->asignarExistencias(cantExistencias);   
+    try{
+        this->productos.at(unaId)->asignarNombre(unNombre);
+        this->productos.at(unaId)->asignarExistencias(cantExistencias);   
+    }
+    catch(ExcepcionStringTamanoExcedido ex){
+        ex.what();
+    }
 }
 
 void Tienda::eliminarProducto(int unaId) {
