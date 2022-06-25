@@ -2,6 +2,7 @@
 #include "../src/tienda.h"
 
 #include "../src/producto.h"
+#include "../src/excepcionStringTamanoExcedido.h"
 #include<fstream>
 #include<cstring>
 #include<string>
@@ -12,6 +13,30 @@ using namespace AdministradorExistencias;
 using namespace std;
 
 namespace {
+    TEST(Tienda_Tests, Obtencion_Datos){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        Tienda* tienda = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+
+        // Act - se ejecuta la operación
+
+        // Assert - se validan los resultados
+
+        EXPECT_EQ(tienda->obtenerNombre(), nombreTienda);
+        EXPECT_EQ(tienda->obtenerDireccionInternet(), dInternet);
+        EXPECT_EQ(tienda->obtenerDireccionFisica(), dFisica);
+        EXPECT_EQ(tienda->obtenerTelefono(), telefono);
+           
+    }
+
     TEST(Tienda_Tests, Insertar_Producto){
 
         /// AAA
@@ -55,6 +80,29 @@ namespace {
 
         EXPECT_EQ(nuevoNombre, tienda->obtenerProductos().at(1)->obtenerNombre());          
         EXPECT_EQ(nuevaExistencia, tienda->obtenerProductos().at(1)->obtenerNumExistencias());          
+
+        delete tienda;
+    }
+    
+     TEST(Tienda_Tests, Eliminar_Producto){
+        /// AAA
+
+        // Arange - se configura el escenario
+
+        Tienda* tienda = new Tienda("Verduleria", "verduleria.com", "Cinco Esquinas, Tibás", "88888888");
+        Producto* producto = new Producto(1, "Zanahoria", 1000);
+
+        tienda->insertarProducto(producto);
+
+        // Act - se ejecuta la operación
+
+        tienda->eliminarProducto(1);
+
+        // Assert - se validan los resultados
+
+        EXPECT_THROW({
+            Producto* producto = tienda->obtenerProductos().at(1);
+        }, out_of_range);
 
         delete tienda;
     }
@@ -167,7 +215,6 @@ namespace {
 
         archivoBinarioEntrada.close();
 
-
         string esperado = tienda->toString();
         string actual = tiendaActual->toString();
 
@@ -177,6 +224,29 @@ namespace {
         // Assert - se validan los resultados
         EXPECT_EQ(esperado, actual);
 
+    }
+
+    TEST(Tienda_Tests, Datos_Tienda_Tamano_Excedido){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+
+        string nombreTienda = "000000000000000000000000000000000000000000000";
+        string dInternet = "000000000000000000000000000000000000000000000";
+        string dFisica = "000000000000000000000000000000000000000000000";
+        string telefono = "000000000000000000000000000000000000000000000"; 
+
+        // Act - se ejecuta la operación
+
+        Tienda* tienda;
+
+        // Assert - se validan los resultados
+
+        EXPECT_THROW({
+            tienda = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+        }, ExcepcionStringTamanoExcedido);
+   
     }
 
     /*
@@ -236,38 +306,6 @@ namespace {
 
     /*
     TEST(Tienda_Tests, Consultar_Informacion_General){
-
-        /// AAA
-
-        // Arange - se configura el escenario
-        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro, 25m Este Fábrica factorio", "88888888");
-        Producto* producto = new Producto(1, "Zanahoria", 1000);
-
-        // Act - se ejecuta la operación
-        tienda.añadirProducto(producto);
-
-        // Assert - se validan los resultados
-        
-
-    }
-
-    TEST(Tienda_Tests, Cargar_Productos_ArchivoBinario){
-
-        /// AAA
-
-        // Arange - se configura el escenario
-        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro, 25m Este Fábrica factorio", "88888888");
-        Producto* producto = new Producto(1, "Zanahoria", 1000);
-
-        // Act - se ejecuta la operación
-        tienda.añadirProducto(producto);
-
-        // Assert - se validan los resultados
-        
-
-    }
-
-    TEST(Tienda_Tests, Eliminar_Producto){
 
         /// AAA
 

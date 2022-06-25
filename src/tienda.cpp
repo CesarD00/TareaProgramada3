@@ -3,14 +3,40 @@
 #include <cstring>
 #include "producto.h"
 
+#include "excepcionStringTamanoExcedido.h"
+
 using namespace std;
 using namespace AdministradorExistencias;
 
 Tienda::Tienda(string unNombre, string unaDireccionI, string unaDireccionF, string unTelefono){
-    strcpy(this->nombre, unNombre.c_str());
-    strcpy(this->direccionInternet, unaDireccionI.c_str());
-    strcpy(this->direccionFisica, unaDireccionF.c_str());
-    strcpy(this->telefono, unTelefono.c_str());
+    
+    if(unNombre.length() > sizeof(this->nombre)){
+        throw ExcepcionStringTamanoExcedido(this->nombre, unNombre);
+    }
+    else{
+        strcpy(this->nombre, unNombre.c_str());    
+    }
+
+    if(unaDireccionI.length() > sizeof(this->direccionInternet)){
+        throw ExcepcionStringTamanoExcedido(this->direccionInternet, unaDireccionI);
+    }
+    else{
+        strcpy(this->direccionInternet, unaDireccionI.c_str());     
+    }  
+
+    if(unNombre.length() > sizeof(this->nombre)){
+        throw ExcepcionStringTamanoExcedido(this->nombre, unNombre);
+    }
+    else{
+        strcpy(this->direccionFisica, unaDireccionF.c_str());  
+    }  
+
+    if(unTelefono.length() > sizeof(this->telefono)){
+        throw ExcepcionStringTamanoExcedido(this->telefono, unTelefono);
+    }
+    else{
+        strcpy(this->telefono, unTelefono.c_str());    
+    }    
 }
 
 Tienda::Tienda(){
@@ -46,12 +72,16 @@ void Tienda::modificarProducto(int unaId, string unNombre, int cantExistencias) 
     this->productos.at(unaId)->asignarExistencias(cantExistencias);   
 }
 
+void Tienda::eliminarProducto(int unaId) {
+    this->productos.erase(unaId);
+}
+
 void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
     // Escritura de la información general de la tienda
     salida->write(this->nombre, sizeof(this->nombre));
     salida->write(this->direccionInternet, sizeof(this->direccionInternet));
     salida->write(this->direccionFisica, sizeof(this->direccionFisica));
-    salida->write(this->telefono, 9);
+    salida->write(this->telefono, sizeof(this->telefono));
 
     // Escritura de los productos de la tienda
     for(const auto &producto : this->productos){
@@ -70,7 +100,7 @@ void Tienda::cargarInformacionTiendaArchivoBinario(istream* entrada){
     entrada->read(this->nombre, sizeof(this->nombre));
     entrada->read(this->direccionInternet, sizeof(this->direccionInternet));
     entrada->read(this->direccionFisica, sizeof(this->direccionFisica));
-    entrada->read(this->telefono, 9);
+    entrada->read(this->telefono, sizeof(this->telefono));
 
     for(int i = 0; i < cantidadProductos; i++){
         Producto* nuevoProducto = new Producto();

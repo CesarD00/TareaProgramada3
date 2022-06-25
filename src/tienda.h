@@ -17,7 +17,7 @@ namespace AdministradorExistencias {
         char direccionInternet[24];
         char direccionFisica[24];
         char telefono[9];
-        map<int, Producto*> productos;
+        map<int, Producto*> productos {};
 
         public:
         Tienda(string unNombre, string unaDireccionI, string unaDireccionF, string unTelefono);
@@ -27,6 +27,7 @@ namespace AdministradorExistencias {
         void insertarProducto(int unaId, string unNombre, int cantExistencias);
         void insertarProducto(Producto* nuevoProducto);
         void modificarProducto(int unaId, string unNombre, int cantExistencias);
+        void eliminarProducto(int unaId);
         void guardarInformacionTiendaArchivoBinario(ostream* salida);
         void cargarInformacionTiendaArchivoBinario(istream* entrada);
         char* obtenerNombre();
