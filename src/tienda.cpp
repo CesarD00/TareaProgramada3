@@ -5,6 +5,7 @@
 
 #include "excepcionStringTamanoExcedido.h"
 #include "excepcionNumeroNegativo.h"
+#include "excepcionPosicionNoExistente.h"
 
 using namespace std;
 using namespace AdministradorExistencias;
@@ -38,6 +39,9 @@ Tienda::Tienda(string unNombre, string unaDireccionI, string unaDireccionF, stri
     else{
         strcpy(this->telefono, unTelefono.c_str());    
     }    
+
+    this->productos.clear();
+
 }
 
 Tienda::Tienda(){
@@ -45,6 +49,8 @@ Tienda::Tienda(){
     strcpy(this->direccionInternet, "");
     strcpy(this->direccionFisica, "");
     strcpy(this->telefono, ""); 
+
+    this->productos.clear();
 }
 
 Tienda::~Tienda(){
@@ -94,10 +100,10 @@ void Tienda::eliminarProducto(int unaId) {
 
 void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
     // Escritura de la información general de la tienda
-    salida->write(this->nombre, sizeof(this->nombre));
-    salida->write(this->direccionInternet, sizeof(this->direccionInternet));
-    salida->write(this->direccionFisica, sizeof(this->direccionFisica));
-    salida->write(this->telefono, sizeof(this->telefono));
+    salida->write(this->nombre, 15);
+    salida->write(this->direccionInternet, 24);
+    salida->write(this->direccionFisica, 24);
+    salida->write(this->telefono, 8);
 
     // Escritura de los productos de la tienda
     for(const auto &producto : this->productos){
@@ -105,7 +111,8 @@ void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
     }
 }
 
-void Tienda::cargarInformacionTiendaArchivoBinario(istream* entrada){
+void Tienda::cargarInformacionTiendaArchivoBinario(istream* entrada) {
+
     entrada->seekg(0, ios::end);
 
     int cantidadBytes = entrada->tellg();
@@ -113,10 +120,14 @@ void Tienda::cargarInformacionTiendaArchivoBinario(istream* entrada){
 
     entrada->seekg(0, ios::beg);
 
-    entrada->read(this->nombre, sizeof(this->nombre));
-    entrada->read(this->direccionInternet, sizeof(this->direccionInternet));
-    entrada->read(this->direccionFisica, sizeof(this->direccionFisica));
-    entrada->read(this->telefono, sizeof(this->telefono));
+    entrada->read(this->nombre, 15);
+    entrada->read(this->direccionInternet, 24);
+    entrada->read(this->direccionFisica, 24);
+    entrada->read(this->telefono, 8);
+
+    this->productos.clear();
+
+    entrada->seekg(71);
 
     for(int i = 0; i < cantidadProductos; i++){
         Producto* nuevoProducto = new Producto();
@@ -126,6 +137,31 @@ void Tienda::cargarInformacionTiendaArchivoBinario(istream* entrada){
         this->insertarProducto(nuevoProducto);
     }
 
+}
+
+void Tienda::cargarProductoDesdeArchivoBinario(istream* entrada, int posicion) {
+    entrada->seekg(0, ios::end);
+
+    int cantidadBytes = entrada->tellg();
+    int cantidadProductos = (cantidadBytes - 71) / sizeof(Producto);
+
+    if(posicion < 0) {
+        throw ExcepcionNumeroNegativo();
+    }
+
+    if(cantidadProductos <= posicion) {
+        throw ExcepcionPosicionNoExistente();
+    }
+
+    entrada->seekg(71 + (sizeof(Producto) * posicion));
+
+    Producto* producto = new Producto();
+
+    entrada->read((char* )producto, sizeof(Producto));
+
+    this->productos.clear();
+
+    this->insertarProducto(producto); 
 }
 
 char* Tienda::obtenerNombre(){
@@ -147,12 +183,12 @@ char* Tienda::obtenerTelefono(){
 string Tienda::toString() {
     string informacion = "";
 
-    informacion += string(this->nombre) + " " + string(this->direccionInternet) + " " + string(this->direccionFisica) + " " + string(this->telefono);
+    informacion += string(this->nombre) + " " + string(this->direccionInternet) + " " + string(this->direccionFisica) + " " + string(this->telefono) + " ";
 
     for(const auto &producto : this->productos){
-        informacion += producto.second->obtenerId() + " ";
+        informacion += to_string(producto.second->obtenerId()) + " ";
         informacion += string(producto.second->obtenerNombre()) + " ";
-        informacion += producto.second->obtenerNumExistencias() + " ";
+        informacion += to_string(producto.second->obtenerNumExistencias()) + " ";
     }
 
     return informacion;

@@ -1,8 +1,11 @@
 #include <gtest/gtest.h>
 #include "../src/tienda.h"
-
 #include "../src/producto.h"
+
 #include "../src/excepcionStringTamanoExcedido.h"
+#include "../src/excepcionNumeroNegativo.h"
+#include "../src/excepcionPosicionNoExistente.h"
+
 #include<fstream>
 #include<cstring>
 #include<string>
@@ -316,7 +319,7 @@ namespace {
         string nombreTienda = "Verduleria";
         string dInternet = "verduleria.com";
         string dFisica = "Cinco Esquinas, Tibas";
-        string telefono = "88888888"; 
+        string telefono = "8888888"; 
 
         int id1 = 1;
         string nombre1 = "Zanahoria";
@@ -381,6 +384,136 @@ namespace {
 
         delete tienda2;
         delete tienda;
+
+    }
+
+    TEST(Tienda_Tests, CargarUnProducto_Desde_Archivo_Binario){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        int id1 = 001;
+        string nombre1 = "Zanahoria";
+        int existencias1 = 1000;
+        int id2 = 002;
+        string nombre2 = "Papa";
+        int existencias2 = 750;
+
+        Tienda* tiendaAuxiliar = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+        Producto* producto1 = new Producto(id1, nombre1, existencias1);
+        Producto* producto2 = new Producto(id2, nombre2, existencias2);
+
+        tiendaAuxiliar->insertarProducto(producto1);
+        tiendaAuxiliar->insertarProducto(producto2);
+
+        ofstream archivoBinarioSalida;
+
+        archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
+
+        if(!archivoBinarioSalida.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        tiendaAuxiliar->guardarInformacionTiendaArchivoBinario(&archivoBinarioSalida);
+
+        archivoBinarioSalida.close();
+
+        Tienda* tiendaACargarProducto = new Tienda("a", "a", "a", "a");
+
+        ifstream archivoBinarioEntrada;
+
+        archivoBinarioEntrada.open("informacionTienda.dat", ios::in|ios::binary);
+
+        if(!archivoBinarioEntrada.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        // Act - se ejecuta la operación
+        
+        tiendaACargarProducto->cargarProductoDesdeArchivoBinario(&archivoBinarioEntrada, 1);
+
+        archivoBinarioEntrada.close();
+
+        int a = remove("informacionTienda.dat");
+
+        // Assert - se validan los resultados
+        EXPECT_EQ(tiendaACargarProducto->obtenerProductos().at(002)->obtenerNombre(), nombre2);
+        EXPECT_EQ(tiendaACargarProducto->obtenerProductos().at(002)->obtenerNumExistencias(), existencias2);
+
+        delete tiendaAuxiliar;
+        delete tiendaACargarProducto;
+
+    }
+
+    TEST(Tienda_Tests, CargarProducto_Posicion_Inexistente_Desde_Archivo_Binario){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        int id1 = 001;
+        string nombre1 = "Zanahoria";
+        int existencias1 = 1000;
+        int id2 = 002;
+        string nombre2 = "Papa";
+        int existencias2 = 750;
+
+        Tienda* tiendaAuxiliar = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+        Producto* producto1 = new Producto(id1, nombre1, existencias1);
+        Producto* producto2 = new Producto(id2, nombre2, existencias2);
+
+        tiendaAuxiliar->insertarProducto(producto1);
+        tiendaAuxiliar->insertarProducto(producto2);
+
+        ofstream archivoBinarioSalida;
+
+        archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
+
+        if(!archivoBinarioSalida.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        tiendaAuxiliar->guardarInformacionTiendaArchivoBinario(&archivoBinarioSalida);
+
+        archivoBinarioSalida.close();
+
+        Tienda* tiendaACargarProducto = new Tienda("a", "a", "a", "a");
+
+        ifstream archivoBinarioEntrada;
+
+        archivoBinarioEntrada.open("informacionTienda.dat", ios::in|ios::binary);
+
+        if(!archivoBinarioEntrada.is_open()){
+            cerr<<"Error";
+            FAIL();
+        }
+
+        // Act - se ejecuta la operación
+
+        // Assert - se validan los resultados
+        EXPECT_THROW({
+            tiendaACargarProducto->cargarProductoDesdeArchivoBinario(&archivoBinarioEntrada, 2);
+
+        }, ExcepcionPosicionNoExistente);
+
+        archivoBinarioEntrada.close();
+
+        delete tiendaAuxiliar;
+        delete tiendaACargarProducto;
+
+        int a = remove("informacionTienda.dat");
 
     }
 
