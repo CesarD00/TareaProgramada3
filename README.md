@@ -23,7 +23,7 @@ Bytes necesarios para un producto = 28
 
 Offset Producto "n" =  71 + (n * 28)
 
-## Para compilar el programa, ejecute la siguiente instrucción:
+## Para compilar el programa y generar el archivo .so junto con los .h para la biblioteca, ejecute la siguiente instrucción:
 
 - make
 
