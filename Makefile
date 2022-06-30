@@ -11,6 +11,7 @@ all:
 	cp src/excepcionNumeroNegativo.h ./bin/include
 	cp src/excepcionPosicionNoExistente.h ./bin/include
 	cp src/excepcionStringTamanoExcedido.h ./bin/include
+	cp src/excepcionIdNoEncontrada.h ./bin/include
 	cp src/producto.h ./bin/include
 	cp src/tienda.h ./bin/include
 

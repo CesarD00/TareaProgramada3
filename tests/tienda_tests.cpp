@@ -110,6 +110,25 @@ namespace {
         delete tienda;
     }
 
+    /*
+    TEST(Tienda_Tests, Consultar_Productos){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro, 25m Este Fábrica factorio", "88888888");
+        Producto* producto = new Producto(1, "Zanahoria", 1000);
+
+        // Act - se ejecuta la operación
+        tienda.añadirProducto(producto);
+
+        // Assert - se validan los resultados
+        
+
+    }
+
+    */
+
     TEST(Tienda_Tests, Cargar_Informacion_Tienda_ArchivoBinario){
 
         /// AAA
@@ -141,7 +160,7 @@ namespace {
         archivoBinarioLectura.open("informacion.dat", ios::in|ios::binary);
 
         if(!archivoBinarioLectura.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para leer los datos.";
             FAIL();
         }
 
@@ -198,7 +217,7 @@ namespace {
         archivoBinarioSalida.open("archivo_test.dat", ios::out|ios::binary);
 
         if(!archivoBinarioSalida.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para escribir los datos.";
             FAIL();
         }
 
@@ -212,7 +231,7 @@ namespace {
         archivoBinarioEntrada.open("archivo_test.dat", ios::in|ios::binary);
 
         if(!archivoBinarioEntrada.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para leer los datos";
             FAIL();
         }
 
@@ -240,7 +259,7 @@ namespace {
         /// AAA
 
         // Arange - se configura el escenario
-        string nombreTienda = "Verduleria";
+        string nombreTienda = "Verduleriaaaaa";
         string dInternet = "verduleria.com";
         string dFisica = "Cinco Esquinas, Tibas";
         string telefono = "88888888"; 
@@ -256,7 +275,7 @@ namespace {
         archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
 
         if(!archivoBinarioSalida.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para escribir los datos";
             FAIL();
         }
 
@@ -275,7 +294,7 @@ namespace {
         archivoBinarioEntrada.open("informacionTienda.dat", ios::in|ios::binary);
 
         if(!archivoBinarioEntrada.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se puedo abrir el archivo para leer los datos.";
             FAIL();
         }
 
@@ -289,7 +308,7 @@ namespace {
         archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
 
         if(!archivoBinarioSalida.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para escribir los datos.";
             FAIL();
         }
 
@@ -319,27 +338,27 @@ namespace {
         string nombreTienda = "Verduleria";
         string dInternet = "verduleria.com";
         string dFisica = "Cinco Esquinas, Tibas";
-        string telefono = "8888888"; 
+        string unTelefono = "8888888"; 
 
         int id1 = 1;
         string nombre1 = "Zanahoria";
         int existencias1 = 1000;
     
-        Tienda* tienda = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+        Tienda* tienda = new Tienda(nombreTienda, dInternet, dFisica, unTelefono);
 
         ofstream archivoBinarioSalida;
 
         archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
 
         if(!archivoBinarioSalida.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para escribir los datos.";
             FAIL();
         }
 
         archivoBinarioSalida.write(nombreTienda.c_str(), 15);
         archivoBinarioSalida.write(dInternet.c_str(), 24);
         archivoBinarioSalida.write(dFisica.c_str(), 24);
-        archivoBinarioSalida.write(telefono.c_str(), 8);
+        archivoBinarioSalida.write(unTelefono.c_str(), 8);
         archivoBinarioSalida.write((char*)&id1, sizeof(int));
         archivoBinarioSalida.write(nombre1.c_str(), 20);
         archivoBinarioSalida.write((char*)&existencias1, sizeof(int));
@@ -351,7 +370,7 @@ namespace {
         archivoBinarioEntrada.open("informacionTienda.dat", ios::in|ios::binary);
 
         if(!archivoBinarioEntrada.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para leer los datos.";
             FAIL();
         }
 
@@ -365,7 +384,7 @@ namespace {
         archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
 
         if(!archivoBinarioSalida.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para escribir los datos.";
             FAIL();
         }
 
@@ -378,6 +397,9 @@ namespace {
         archivoBinarioEntrada.close();
 
         int a = remove("informacionTienda.dat");
+
+        //cout<<tienda->toString()<<endl;
+        //cout<<tienda2->toString()<<endl;
 
         // Assert - se validan los resultados
         EXPECT_EQ(tienda->toString(), tienda2->toString());
@@ -416,7 +438,7 @@ namespace {
         archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
 
         if(!archivoBinarioSalida.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para escribir los datos.";
             FAIL();
         }
 
@@ -431,7 +453,7 @@ namespace {
         archivoBinarioEntrada.open("informacionTienda.dat", ios::in|ios::binary);
 
         if(!archivoBinarioEntrada.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. no se pudo abrir el archivo para leer los datos.";
             FAIL();
         }
 
@@ -481,7 +503,7 @@ namespace {
         archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
 
         if(!archivoBinarioSalida.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para escribir los datos.";
             FAIL();
         }
 
@@ -496,7 +518,7 @@ namespace {
         archivoBinarioEntrada.open("informacionTienda.dat", ios::in|ios::binary);
 
         if(!archivoBinarioEntrada.is_open()){
-            cerr<<"Error";
+            cerr<<"Error. No se pudo abrir el archivo para leer los datos.";
             FAIL();
         }
 
@@ -507,6 +529,66 @@ namespace {
             tiendaACargarProducto->cargarProductoDesdeArchivoBinario(&archivoBinarioEntrada, 2);
 
         }, ExcepcionPosicionNoExistente);
+
+        archivoBinarioEntrada.close();
+
+        delete tiendaAuxiliar;
+        delete tiendaACargarProducto;
+
+        int a = remove("informacionTienda.dat");
+
+    }
+
+    TEST(Tienda_Tests, CargarProducto_Posicion_Negativa_Desde_Archivo_Binario){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        string nombreTienda = "Verduleria";
+        string dInternet = "verduleria.com";
+        string dFisica = "Cinco Esquinas, Tibas";
+        string telefono = "88888888"; 
+
+        int id1 = 001;
+        string nombre1 = "Zanahoria";
+        int existencias1 = 1000;
+
+        Tienda* tiendaAuxiliar = new Tienda(nombreTienda, dInternet, dFisica, telefono);
+        Producto* producto1 = new Producto(id1, nombre1, existencias1);
+
+        tiendaAuxiliar->insertarProducto(producto1);
+
+        ofstream archivoBinarioSalida;
+
+        archivoBinarioSalida.open("informacionTienda.dat", ios::out|ios::binary);
+
+        if(!archivoBinarioSalida.is_open()){
+            cerr<<"Error. No se pudo abrir el archivo para escribir los datos.";
+            FAIL();
+        }
+
+        tiendaAuxiliar->guardarInformacionTiendaArchivoBinario(&archivoBinarioSalida);
+
+        archivoBinarioSalida.close();
+
+        Tienda* tiendaACargarProducto = new Tienda("a", "a", "a", "a");
+
+        ifstream archivoBinarioEntrada;
+
+        archivoBinarioEntrada.open("informacionTienda.dat", ios::in|ios::binary);
+
+        if(!archivoBinarioEntrada.is_open()){
+            cerr<<"Error. No se pudo abrir el archivo para leer los datos.";
+            FAIL();
+        }
+
+        // Act - se ejecuta la operación
+
+        // Assert - se validan los resultados
+        EXPECT_THROW({
+            tiendaACargarProducto->cargarProductoDesdeArchivoBinario(&archivoBinarioEntrada, -2);
+
+        }, ExcepcionNumeroNegativo);
 
         archivoBinarioEntrada.close();
 
@@ -541,7 +623,8 @@ namespace {
     }
 
     /*
-    TEST(Tienda_Tests, Consultar_Informacion_General){
+
+    TEST(Tienda_Tests, Informacion_General_ToString){
 
         /// AAA
 

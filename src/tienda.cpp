@@ -6,6 +6,7 @@
 #include "excepcionStringTamanoExcedido.h"
 #include "excepcionNumeroNegativo.h"
 #include "excepcionPosicionNoExistente.h"
+#include "excepcionIdNoEncontrada.h"
 
 using namespace std;
 using namespace AdministradorExistencias;
@@ -26,7 +27,7 @@ Tienda::Tienda(string unNombre, string unaDireccionI, string unaDireccionF, stri
         strcpy(this->direccionInternet, unaDireccionI.c_str());     
     }  
 
-    if(unNombre.length() > sizeof(this->nombre)){
+    if(unaDireccionF.length() > sizeof(this->direccionFisica)){
         throw ExcepcionStringTamanoExcedido();
     }
     else{
@@ -95,7 +96,40 @@ void Tienda::modificarProducto(int unaId, string unNombre, int cantExistencias) 
 }
 
 void Tienda::eliminarProducto(int unaId) {
+    bool encontrado = false;
+
+    if(unaId < 0){
+        throw ExcepcionNumeroNegativo();
+    }
+
+    for(const auto &producto : this->productos){
+        if(producto.second->obtenerId() == unaId){
+            encontrado = true;
+        }
+    }
+
+    if(!encontrado){
+        throw ExcepcionIdNoEncontrada();
+    }
+
     this->productos.erase(unaId);
+}
+
+string Tienda::consultarProductos(){
+    int contador = 0;
+    string informacion = "";
+
+    for(const auto &producto : this->productos){
+        contador++;
+
+        informacion += "Producto " + to_string(contador) + "\n";
+
+        informacion += "Id: " + to_string(producto.second->obtenerId()) + "\n";
+        informacion += "Nombre: " + string(producto.second->obtenerNombre()) + "\n";
+        informacion += "Cantidad de existencias: " + to_string(producto.second->obtenerNumExistencias()) + "\n";
+    }
+
+    return informacion;
 }
 
 void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
@@ -182,13 +216,20 @@ char* Tienda::obtenerTelefono(){
 
 string Tienda::toString() {
     string informacion = "";
+    int contador = 0;
 
-    informacion += string(this->nombre) + " " + string(this->direccionInternet) + " " + string(this->direccionFisica) + " " + string(this->telefono) + " ";
+    informacion = string("Datos de la tienda\n") + string("Nombre: ") + string(this->nombre) + "\n" + "Dirección de Internet: " + string(this->direccionInternet) + "\n" + "Dirección física: " + string(this->direccionFisica) + "\n" + "Número de teléfono: " + string(this->telefono) + "\n\n";
+
+    informacion += "Productos\n";
 
     for(const auto &producto : this->productos){
-        informacion += to_string(producto.second->obtenerId()) + " ";
-        informacion += string(producto.second->obtenerNombre()) + " ";
-        informacion += to_string(producto.second->obtenerNumExistencias()) + " ";
+        contador++;
+
+        informacion += "Producto " + to_string(contador) + "\n";
+
+        informacion += "Id: " + to_string(producto.second->obtenerId()) + "\n";
+        informacion += "Nombre: " + string(producto.second->obtenerNombre()) + "\n";
+        informacion += "Cantidad de existencias: " + to_string(producto.second->obtenerNumExistencias()) + "\n";
     }
 
     return informacion;
