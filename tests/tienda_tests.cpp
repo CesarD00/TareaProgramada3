@@ -5,6 +5,7 @@
 #include "../src/excepcionStringTamanoExcedido.h"
 #include "../src/excepcionNumeroNegativo.h"
 #include "../src/excepcionPosicionNoExistente.h"
+#include "../src/excepcionIdNoEncontrada.h"
 
 #include<fstream>
 #include<cstring>
@@ -110,24 +111,34 @@ namespace {
         delete tienda;
     }
 
-    /*
     TEST(Tienda_Tests, Consultar_Productos){
 
         /// AAA
 
         // Arange - se configura el escenario
-        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro, 25m Este Fábrica factorio", "88888888");
+        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro", "88888888");
         Producto* producto = new Producto(1, "Zanahoria", 1000);
+        Producto* producto2 = new Producto(4, "Manzana", 7000);
+        Producto* producto3 = new Producto(7, "Papa", 4000);
+
+        tienda->insertarProducto(producto);
+        tienda->insertarProducto(producto2);
+        tienda->insertarProducto(producto3);
 
         // Act - se ejecuta la operación
-        tienda.añadirProducto(producto);
+
+        string productos = tienda->consultarProductos();
+        string listaEsperada = string("Producto 1\nId: 1\nNombre: Zanahoria\nCantidad de existencias: 1000\n") +
+            string("Producto 2\nId: 4\nNombre: Manzana\nCantidad de existencias: 7000\n") +
+            string("Producto 3\nId: 7\nNombre: Papa\nCantidad de existencias: 4000\n");
+        
+        delete tienda;
 
         // Assert - se validan los resultados
         
+        EXPECT_EQ(productos, listaEsperada);
 
     }
-
-    */
 
     TEST(Tienda_Tests, Cargar_Informacion_Tienda_ArchivoBinario){
 
@@ -610,9 +621,10 @@ namespace {
         string dFisica = "000000000000000000000000000000000000000000000";
         string telefono = "000000000000000000000000000000000000000000000"; 
 
-        // Act - se ejecuta la operación
-
         Tienda* tienda;
+
+
+        // Act - se ejecuta la operación
 
         // Assert - se validan los resultados
 
@@ -622,25 +634,31 @@ namespace {
    
     }
 
-    /*
-
-    TEST(Tienda_Tests, Informacion_General_ToString){
+    TEST(Tienda_Tests, Eliminacion_Producto_IdNegativa_Y_IdNoEncontrada){
 
         /// AAA
 
         // Arange - se configura el escenario
-        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro, 25m Este Fábrica factorio", "88888888");
-        Producto* producto = new Producto(1, "Zanahoria", 1000);
+
+        Tienda* tienda = new Tienda("a", "a", "a", "a");
+        tienda->insertarProducto(1, "a", 1000);
+        tienda->insertarProducto(3, "a", 2000);
+        tienda->insertarProducto(4, "a", 3000);
 
         // Act - se ejecuta la operación
-        tienda.añadirProducto(producto);
+
 
         // Assert - se validan los resultados
-        
+
+        EXPECT_THROW({
+            tienda->eliminarProducto(-4);
+        }, ExcepcionNumeroNegativo);
+
+        EXPECT_THROW({
+            tienda->eliminarProducto(2);
+        }, ExcepcionIdNoEncontrada);
 
     }
-
-    */
 
     
 }
