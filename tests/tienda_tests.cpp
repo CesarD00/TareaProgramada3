@@ -140,6 +140,39 @@ namespace {
 
     }
 
+    
+
+    TEST(Tienda_Tests, Informacion_Completa_Tienda_ToString){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro", "88888888");
+        Producto* producto = new Producto(1, "Zanahoria", 1000);
+        Producto* producto2 = new Producto(4, "Manzana", 7000);
+        Producto* producto3 = new Producto(7, "Papa", 4000);
+
+        tienda->insertarProducto(producto);
+        tienda->insertarProducto(producto2);
+        tienda->insertarProducto(producto3);
+
+        // Act - se ejecuta la operación
+
+        string informacion = tienda->toString();
+        string informacionEsperada = string("Datos de la tienda\nNombre: Verdulería\nDirección de Internet: verduleria.com\nDirección física: San Pedro\nNúmero de teléfono: 88888888\n\n") + 
+            string("Productos\nProducto 1\nId: 1\nNombre: Zanahoria\nCantidad de existencias: 1000\n") +
+            string("Producto 2\nId: 4\nNombre: Manzana\nCantidad de existencias: 7000\n") +
+            string("Producto 3\nId: 7\nNombre: Papa\nCantidad de existencias: 4000\n");
+        
+        delete tienda;
+
+        // Assert - se validan los resultados
+        
+        EXPECT_EQ(informacion, informacionEsperada);
+
+    }
+    
+
     TEST(Tienda_Tests, Cargar_Informacion_Tienda_ArchivoBinario){
 
         /// AAA
@@ -659,6 +692,10 @@ namespace {
         }, ExcepcionIdNoEncontrada);
 
     }
+
+    
+
+
 
     
 }
