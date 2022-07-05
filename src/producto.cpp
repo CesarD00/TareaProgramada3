@@ -15,7 +15,13 @@ Producto::Producto() {
 }
 
 Producto::Producto(int unaId, string unNombre, int cantExistencias) {
-    this->id = unaId;
+    if(unaId < 0 || cantExistencias < 0){
+        throw ExcepcionNumeroNegativo;
+    }
+    else{
+        this->id = unaId;
+        this->numExistencias = cantExistencias;
+    }
    
     if(unNombre.length() > sizeof(this->nombre)){
         throw ExcepcionStringTamanoExcedido();
@@ -23,8 +29,6 @@ Producto::Producto(int unaId, string unNombre, int cantExistencias) {
     else{
         strcpy(this->nombre, unNombre.c_str());     
     }   
-
-    this->numExistencias = cantExistencias;
 }
 
 Producto::~Producto(){
