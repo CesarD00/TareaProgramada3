@@ -16,7 +16,7 @@ Producto::Producto() {
 
 Producto::Producto(int unaId, string unNombre, int cantExistencias) {
     if(unaId < 0 || cantExistencias < 0){
-        throw ExcepcionNumeroNegativo;
+        throw ExcepcionNumeroNegativo();
     }
     else{
         this->id = unaId;

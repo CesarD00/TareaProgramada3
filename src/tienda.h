@@ -28,7 +28,8 @@ namespace AdministradorExistencias {
         void insertarProducto(Producto* nuevoProducto);
         void modificarProducto(int unaId, string unNombre, int cantExistencias);
         void eliminarProducto(int unaId);
-        string consultarProductos();
+        string consultarProductosString();
+        map<int,Producto*> consultarProductos();
         void guardarInformacionTiendaArchivoBinario(ostream* salida);
         void cargarInformacionTiendaArchivoBinario(istream* entrada);
         void cargarProductoDesdeArchivoBinario(istream* entrada, int posicion);

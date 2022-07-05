@@ -111,7 +111,7 @@ namespace {
         delete tienda;
     }
 
-    TEST(Tienda_Tests, Consultar_Productos){
+    TEST(Tienda_Tests, Consultar_Productos_String){
 
         /// AAA
 
@@ -127,7 +127,7 @@ namespace {
 
         // Act - se ejecuta la operación
 
-        string productos = tienda->consultarProductos();
+        string productos = tienda->consultarProductosString();
         string listaEsperada = string("Producto 1\nId: 1\nNombre: Zanahoria\nCantidad de existencias: 1000\n") +
             string("Producto 2\nId: 4\nNombre: Manzana\nCantidad de existencias: 7000\n") +
             string("Producto 3\nId: 7\nNombre: Papa\nCantidad de existencias: 4000\n");
@@ -140,7 +140,38 @@ namespace {
 
     }
 
-    
+    TEST(Tienda_Tests, Consultar_Productos){
+
+        /// AAA
+
+        // Arange - se configura el escenario
+        Tienda* tienda = new Tienda("Verdulería", "verduleria.com", "San Pedro", "88888888");
+        Producto* producto = new Producto(1, "Zanahoria", 1000);
+        Producto* producto2 = new Producto(4, "Manzana", 7000);
+
+        map<int, Producto*> productosEsperados;
+
+        tienda->insertarProducto(producto);
+        tienda->insertarProducto(producto2);
+
+        productosEsperados.insert(pair<int, Producto*>(1, producto));
+        productosEsperados.insert(pair<int, Producto*>(4, producto2));
+
+        // Act - se ejecuta la operación
+
+        // Assert - se validan los resultados
+        
+        EXPECT_EQ(tienda->consultarProductos().at(1)->obtenerId(), productosEsperados.at(1)->obtenerId());
+        EXPECT_EQ(tienda->consultarProductos().at(1)->obtenerNombre(), productosEsperados.at(1)->obtenerNombre());
+        EXPECT_EQ(tienda->consultarProductos().at(1)->obtenerNumExistencias(), productosEsperados.at(1)->obtenerNumExistencias());
+
+        EXPECT_EQ(tienda->consultarProductos().at(4)->obtenerId(), productosEsperados.at(4)->obtenerId());
+        EXPECT_EQ(tienda->consultarProductos().at(4)->obtenerNombre(), productosEsperados.at(4)->obtenerNombre());
+        EXPECT_EQ(tienda->consultarProductos().at(4)->obtenerNumExistencias(), productosEsperados.at(4)->obtenerNumExistencias());
+
+        delete tienda;
+
+    }
 
     TEST(Tienda_Tests, Informacion_Completa_Tienda_ToString){
 

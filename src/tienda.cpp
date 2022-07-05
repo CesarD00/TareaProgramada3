@@ -115,7 +115,7 @@ void Tienda::eliminarProducto(int unaId) {
     this->productos.erase(unaId);
 }
 
-string Tienda::consultarProductos(){
+string Tienda::consultarProductosString(){
     int contador = 0;
     string informacion = "";
 
@@ -130,6 +130,10 @@ string Tienda::consultarProductos(){
     }
 
     return informacion;
+}
+
+map<int, Producto*> Tienda::consultarProductos(){
+    return this->productos;
 }
 
 void Tienda::guardarInformacionTiendaArchivoBinario(ostream* salida) {
